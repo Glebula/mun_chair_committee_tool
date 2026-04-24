@@ -1,0 +1,46 @@
+import type { AppState } from '../types';
+
+export const DEFAULT_STATE: AppState = {
+  mode: null,
+  sessionState: 'ModeSelect',
+  previousSessionState: 'GSL',
+  theme: 'dark',
+  delegates: [],
+  topic: '',
+  gsl: {
+    speakers: [],
+    currentIndex: 0,
+    speakingTimeSecs: 90,
+    timerRunning: false,
+    timerRemaining: 90,
+  },
+  modCaucus: {
+    topic: '',
+    totalTimeSecs: 600,
+    speakingTimeSecs: 60,
+    totalRemaining: 600,
+    speakerRemaining: 60,
+    currentSpeakerId: null,
+    totalRunning: false,
+    speakerRunning: false,
+    started: false,
+  },
+  unmod: {
+    totalTimeSecs: 300,
+    remaining: 300,
+    running: false,
+    previousState: 'GSL',
+  },
+  roundRobin: {
+    participants: [],
+    currentIndex: 0,
+    speakingTimeSecs: 60,
+    timerRemaining: 60,
+    timerRunning: false,
+    started: false,
+    complete: false,
+  },
+  motions: [],
+  votingRecords: [],
+  workingPapers: [],
+};
