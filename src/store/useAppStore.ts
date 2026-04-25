@@ -73,6 +73,10 @@ export function useAppStore() {
     update(s => ({ ...s, theme }));
   }, [update]);
 
+  const setDefaultMajorityType = useCallback((defaultMajorityType: MajorityType) => {
+    update(s => ({ ...s, defaultMajorityType }));
+  }, [update]);
+
   const setTopic = useCallback((topic: string) => {
     update(s => ({ ...s, topic }));
   }, [update]);
@@ -489,6 +493,7 @@ export function useAppStore() {
     resetSession,
     setSessionState,
     setTheme,
+    setDefaultMajorityType,
     setTopic,
     setCrisisDelegates,
     setAttendance,

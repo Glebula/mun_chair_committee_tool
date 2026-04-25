@@ -150,7 +150,7 @@ export default function MotionsView() {
   const [totalMin, setTotalMin] = useState('10');
   const [totalSec, setTotalSec] = useState('0');
   const [speakSec, setSpeakSec] = useState('60');
-  const [majType, setMajType] = useState<MajorityType>('simple');
+  const [majType, setMajType] = useState<MajorityType>(state.defaultMajorityType);
 
   const needsTimes = motionType !== 'Other';
   const needsSpeakTime = motionType === 'Moderated Caucus' || motionType === 'Round Robin';

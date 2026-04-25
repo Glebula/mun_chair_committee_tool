@@ -5,6 +5,7 @@ export type AttendanceStatus = 'Absent' | 'Present' | 'Present & Voting';
 export type SessionState =
   | 'ModeSelect'
   | 'RollCall'
+  | 'MajoritySetup'
   | 'GSL'
   | 'ModeratedCaucus'
   | 'UnmoderatedCaucus'
@@ -123,6 +124,7 @@ export interface AppState {
   sessionState: SessionState;
   previousSessionState: SessionState;
   theme: 'dark' | 'light';
+  defaultMajorityType: MajorityType;
   delegates: Delegate[];
   topic: string;
   gsl: GSLState;

@@ -5,6 +5,7 @@ export const DEFAULT_STATE: AppState = {
   sessionState: 'ModeSelect',
   previousSessionState: 'GSL',
   theme: 'dark',
+  defaultMajorityType: 'simple',
   delegates: [],
   topic: '',
   gsl: {

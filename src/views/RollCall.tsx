@@ -49,7 +49,7 @@ export default function RollCall() {
   }
 
   function proceed() {
-    setSessionState('GSL');
+    setSessionState('MajoritySetup');
   }
 
   // Crisis setup screen

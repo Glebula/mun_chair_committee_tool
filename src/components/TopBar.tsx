@@ -4,7 +4,8 @@ import type { SessionState } from '../types';
 const STATE_LABELS: Record<SessionState, string> = {
   ModeSelect: 'Mode Select',
   RollCall: 'Roll Call',
-  GSL: 'General Speakers\' List',
+  MajoritySetup: 'Majority Setup',
+  GSL: "General Speakers' List",
   ModeratedCaucus: 'Moderated Caucus',
   UnmoderatedCaucus: 'Unmoderated Caucus',
   GentlemansUnmod: "Gentleman's Unmod",
@@ -17,15 +18,19 @@ const STATE_LABELS: Record<SessionState, string> = {
 };
 
 export default function TopBar() {
-  const { state, presentCount, simpleMajority, twoThirdsMajority, setTheme, resetSession } = useStore();
+  const { state, presentCount, simpleMajority, twoThirdsMajority, setTheme, resetSession, setDefaultMajorityType } = useStore();
 
   const modeLabel = state.mode === 'GA' ? 'GA' : state.mode === 'Crisis' ? 'Crisis' : '';
   const stateLabel = STATE_LABELS[state.sessionState] ?? state.sessionState;
-
   const showTopic = ['ModeratedCaucus', 'GentlemansUnmod', 'RoundRobin'].includes(state.sessionState);
+  const isSimple = state.defaultMajorityType === 'simple';
+
+  function toggleMajority() {
+    setDefaultMajorityType(isSimple ? 'two-thirds' : 'simple');
+  }
 
   return (
-    <div className="sticky top-0 z-50 bg-gray-900 border-b border-gray-700 px-4 py-2 flex items-center gap-4 flex-wrap">
+    <div className="sticky top-0 z-50 bg-gray-900 border-b border-gray-700 px-4 py-2 flex items-center gap-3 flex-wrap">
       {/* Mode badge */}
       {modeLabel && (
         <span className={`text-base font-bold px-3 py-1 rounded-lg ${state.mode === 'GA' ? 'bg-blue-600/30 text-blue-300' : 'bg-amber-600/30 text-amber-300'}`}>
@@ -43,12 +48,27 @@ export default function TopBar() {
 
       <div className="flex-1" />
 
+      {/* Default majority toggle — only shown once in session */}
+      {presentCount > 0 && state.sessionState !== 'RollCall' && state.sessionState !== 'MajoritySetup' && (
+        <button
+          onClick={toggleMajority}
+          title="Click to toggle default majority type"
+          className={`px-3 py-1 rounded-lg text-sm font-bold border min-h-[36px] transition-colors ${
+            isSimple
+              ? 'bg-yellow-900/30 border-yellow-700 text-yellow-300 hover:bg-yellow-900/50'
+              : 'bg-orange-900/30 border-orange-700 text-orange-300 hover:bg-orange-900/50'
+          }`}
+        >
+          {isSimple ? `Simp. Maj. (${simpleMajority})` : `2/3 Maj. (${twoThirdsMajority})`}
+        </button>
+      )}
+
       {/* Attendance stats */}
       {presentCount > 0 && (
-        <div className="flex gap-4 text-base text-gray-300">
+        <div className="flex gap-3 text-base text-gray-300">
           <span>Present: <strong className="text-white">{presentCount}</strong></span>
-          <span>Simp: <strong className="text-yellow-300">{simpleMajority}</strong></span>
-          <span>2/3: <strong className="text-orange-300">{twoThirdsMajority}</strong></span>
+          <span className="text-yellow-400">{simpleMajority}</span>
+          <span className="text-orange-400">{twoThirdsMajority}</span>
         </div>
       )}
 
@@ -63,9 +83,7 @@ export default function TopBar() {
 
       {/* Reset */}
       <button
-        onClick={() => {
-          if (confirm('Reset session? All data will be cleared.')) resetSession();
-        }}
+        onClick={() => { if (confirm('Reset session? All data will be cleared.')) resetSession(); }}
         className="px-3 py-1 rounded-lg bg-red-900/40 hover:bg-red-800/60 text-red-300 text-base border border-red-800 min-h-[36px]"
       >
         Reset

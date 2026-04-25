@@ -14,6 +14,7 @@ import VotingProcedureView from './views/VotingProcedureView';
 import WorkingPapersView from './views/WorkingPapersView';
 import DelegateRosterView from './views/DelegateRosterView';
 import SuspendedView from './views/SuspendedView';
+import MajoritySetupView from './views/MajoritySetupView';
 
 function AppContent() {
   const store = useAppStore();
@@ -26,6 +27,7 @@ function AppContent() {
     switch (state.sessionState) {
       case 'ModeSelect':        return <ModeSelect />;
       case 'RollCall':          return <RollCall />;
+      case 'MajoritySetup':    return <MajoritySetupView />;
       case 'GSL':               return <GSLView />;
       case 'ModeratedCaucus':   return <ModeratedCaucusView />;
       case 'UnmoderatedCaucus': return <UnmodView type="UnmoderatedCaucus" />;
@@ -40,7 +42,7 @@ function AppContent() {
     }
   }
 
-  const inSession = state.sessionState !== 'ModeSelect' && state.sessionState !== 'RollCall';
+  const inSession = !['ModeSelect', 'RollCall', 'MajoritySetup'].includes(state.sessionState);
 
   return (
     <StoreContext.Provider value={store}>

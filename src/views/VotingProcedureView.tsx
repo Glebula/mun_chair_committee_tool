@@ -8,7 +8,7 @@ export default function VotingProcedureView() {
   const [name, setName] = useState('');
   const [forV, setForV] = useState('');
   const [agV, setAgV] = useState('');
-  const [majType, setMajType] = useState<MajorityType>('simple');
+  const [majType, setMajType] = useState<MajorityType>(state.defaultMajorityType);
   const [result, setResult] = useState<{ pass: boolean; name: string; for: number; against: number } | null>(null);
 
   const sm = Math.floor(presentCount / 2) + 1;
