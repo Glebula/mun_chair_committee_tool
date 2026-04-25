@@ -9,6 +9,7 @@ export const DEFAULT_STATE: AppState = {
   delegates: [],
   topic: '',
   gsl: {
+    isOpen: false,
     speakers: [],
     currentIndex: 0,
     speakingTimeSecs: 90,

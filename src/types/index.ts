@@ -18,6 +18,7 @@ export type SessionState =
   | 'Suspended';
 
 export type MotionType =
+  | 'Open GSL'
   | 'Moderated Caucus'
   | 'Unmoderated Caucus'
   | "Gentleman's Unmod"
@@ -46,6 +47,7 @@ export interface GSLSpeaker {
 }
 
 export interface GSLState {
+  isOpen: boolean;
   speakers: GSLSpeaker[];
   currentIndex: number;
   speakingTimeSecs: number;

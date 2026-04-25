@@ -57,10 +57,29 @@ function SortableRow({
 
 export default function GSLView() {
   const store = useStore();
-  const { state, gslAddSpeaker, gslRemoveSpeaker, gslReorder, gslNextSpeaker,
+  const { state, setSessionState, gslAddSpeaker, gslRemoveSpeaker, gslReorder, gslNextSpeaker,
     gslSetSpeakingTime, gslSetTimerRunning, gslTickTimer, gslResetTimer,
     gslSetCurrentIndex, incrementSpeechCount, presentDelegates } = store;
   const { gsl } = state;
+
+  if (!gsl.isOpen) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-6 min-h-[60vh] p-8 text-center">
+        <div className="text-5xl">🔒</div>
+        <h2 className="text-3xl font-bold">GSL Not Yet Opened</h2>
+        <p className="text-xl text-gray-400 max-w-md">
+          A motion to open the General Speakers' List must pass before the GSL can be used.
+          Go to Motions and raise an <strong className="text-blue-300">Open GSL</strong> motion.
+        </p>
+        <button
+          onClick={() => setSessionState('Motions')}
+          className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xl font-bold"
+        >
+          Go to Motions →
+        </button>
+      </div>
+    );
+  }
 
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [addSearch, setAddSearch] = useState('');

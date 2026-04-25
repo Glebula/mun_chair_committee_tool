@@ -3,7 +3,7 @@ import { useStore } from '../store/StoreContext';
 import type { MotionType, MajorityType, Motion } from '../types';
 
 const MOTION_TYPES: MotionType[] = [
-  'Moderated Caucus', 'Unmoderated Caucus', "Gentleman's Unmod", 'Round Robin', 'Other',
+  'Open GSL', 'Moderated Caucus', 'Unmoderated Caucus', "Gentleman's Unmod", 'Round Robin', 'Other',
 ];
 
 function MotionCard({
@@ -169,12 +169,13 @@ export default function MotionsView() {
   const [speakSec, setSpeakSec] = useState('60');
   const [majType, setMajType] = useState<MajorityType>(state.defaultMajorityType);
 
-  const needsTimes = motionType !== 'Other';
+  const isOpenGSL = motionType === 'Open GSL';
+  const needsTimes = motionType !== 'Other' && !isOpenGSL;
   const needsSpeakTime = motionType === 'Moderated Caucus' || motionType === 'Round Robin';
 
   const totalTimeSecs = (parseInt(totalMin, 10) || 0) * 60 + (parseInt(totalSec, 10) || 0);
   const speakingTimeSecs = parseInt(speakSec, 10) || 0;
-  const unevenSplit = needsSpeakTime && speakingTimeSecs > 0 && totalTimeSecs > 0 && totalTimeSecs % speakingTimeSecs !== 0;
+  const unevenSplit = !isOpenGSL && needsSpeakTime && speakingTimeSecs > 0 && totalTimeSecs > 0 && totalTimeSecs % speakingTimeSecs !== 0;
   const maxSpeakers = needsSpeakTime && speakingTimeSecs > 0 ? Math.floor(totalTimeSecs / speakingTimeSecs) : null;
 
   function handleAdd() {
@@ -229,17 +230,31 @@ export default function MotionsView() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-gray-400 mb-1">
-              {motionType === 'Other' ? 'Motion description' : 'Topic'}
-            </label>
-            <input
-              className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-lg focus:outline-none focus:border-blue-400"
-              placeholder={motionType === 'Other' ? 'e.g. Extend speakers time...' : 'Topic...'}
-              value={topic}
-              onChange={e => setTopic(e.target.value)}
-            />
-          </div>
+          {!isOpenGSL && (
+            <div>
+              <label className="block text-gray-400 mb-1">
+                {motionType === 'Other' ? 'Motion description' : 'Topic'}
+              </label>
+              <input
+                className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-lg focus:outline-none focus:border-blue-400"
+                placeholder={motionType === 'Other' ? 'e.g. Extend speakers time...' : 'Topic...'}
+                value={topic}
+                onChange={e => setTopic(e.target.value)}
+              />
+            </div>
+          )}
+
+          {isOpenGSL && (
+            <div>
+              <label className="block text-gray-400 mb-1">Speaking Time (sec)</label>
+              <input
+                className="w-32 bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-xl text-center focus:outline-none focus:border-blue-400"
+                value={speakSec}
+                onChange={e => setSpeakSec(e.target.value)}
+                placeholder="90"
+              />
+            </div>
+          )}
 
           {needsTimes && (
             <div className="flex flex-col gap-2">

@@ -383,6 +383,21 @@ export function useAppStore() {
       const m = s.motions.find(mo => mo.id === motionId);
       if (!m) return s;
 
+      if (m.type === 'Open GSL') {
+        return {
+          ...s,
+          gsl: {
+            ...s.gsl,
+            isOpen: true,
+            speakingTimeSecs: m.speakingTimeSecs,
+            timerRemaining: m.speakingTimeSecs,
+            timerRunning: false,
+          },
+          sessionState: 'GSL',
+          previousSessionState: s.sessionState,
+        };
+      }
+
       if (m.type === 'Moderated Caucus') {
         return {
           ...s,
