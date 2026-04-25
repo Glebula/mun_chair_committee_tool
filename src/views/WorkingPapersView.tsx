@@ -17,7 +17,7 @@ export default function WorkingPapersView() {
   return (
     <div className="flex flex-col gap-5 p-4 max-w-3xl mx-auto w-full">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h2 className="text-3xl font-bold">Working Papers</h2>
+        <h2 className="text-3xl font-bold">Papers / Resolutions</h2>
         <button
           onClick={addWorkingPaper}
           className="px-5 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-white text-lg font-bold"

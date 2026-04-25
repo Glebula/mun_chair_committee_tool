@@ -12,7 +12,7 @@ const NAV_ITEMS: NavItem[] = [
   { state: 'GSL', label: 'GSL' },
   { state: 'Motions', label: 'Motions' },
   { state: 'VotingProcedure', label: 'Voting' },
-  { state: 'WorkingPapers', label: 'Papers' },
+  { state: 'WorkingPapers', label: 'Papers/Res.' },
   { state: 'DelegateRoster', label: 'Roster' },
 ];
 

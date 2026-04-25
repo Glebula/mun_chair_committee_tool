@@ -208,17 +208,17 @@ export default function MotionsView() {
             </div>
           </div>
 
-          {motionType !== 'Other' && (
-            <div>
-              <label className="block text-gray-400 mb-1">Topic</label>
-              <input
-                className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-lg focus:outline-none focus:border-blue-400"
-                placeholder="Topic..."
-                value={topic}
-                onChange={e => setTopic(e.target.value)}
-              />
-            </div>
-          )}
+          <div>
+            <label className="block text-gray-400 mb-1">
+              {motionType === 'Other' ? 'Motion description' : 'Topic'}
+            </label>
+            <input
+              className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-lg focus:outline-none focus:border-blue-400"
+              placeholder={motionType === 'Other' ? 'e.g. Extend speakers time...' : 'Topic...'}
+              value={topic}
+              onChange={e => setTopic(e.target.value)}
+            />
+          </div>
 
           {needsTimes && (
             <div className="flex gap-4 flex-wrap">

@@ -11,7 +11,7 @@ const STATE_LABELS: Record<SessionState, string> = {
   RoundRobin: 'Round Robin',
   Motions: 'Motions',
   VotingProcedure: 'Voting Procedure',
-  WorkingPapers: 'Working Papers',
+  WorkingPapers: 'Papers / Resolutions',
   DelegateRoster: 'Delegate Roster',
   Suspended: 'Suspended',
 };
