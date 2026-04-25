@@ -155,9 +155,13 @@ export default function MotionsView() {
   const needsTimes = motionType !== 'Other';
   const needsSpeakTime = motionType === 'Moderated Caucus' || motionType === 'Round Robin';
 
+  const totalTimeSecs = (parseInt(totalMin, 10) || 0) * 60 + (parseInt(totalSec, 10) || 0);
+  const speakingTimeSecs = parseInt(speakSec, 10) || 0;
+  const unevenSplit = needsSpeakTime && speakingTimeSecs > 0 && totalTimeSecs > 0 && totalTimeSecs % speakingTimeSecs !== 0;
+  const maxSpeakers = needsSpeakTime && speakingTimeSecs > 0 ? Math.floor(totalTimeSecs / speakingTimeSecs) : null;
+
   function handleAdd() {
-    const totalTimeSecs = (parseInt(totalMin, 10) || 0) * 60 + (parseInt(totalSec, 10) || 0);
-    const speakingTimeSecs = parseInt(speakSec, 10) || 0;
+    if (unevenSplit) return;
     addMotion(motionType, proposerId || null, topic, totalTimeSecs, speakingTimeSecs, majType);
     setShowForm(false);
     setTopic('');
@@ -221,19 +225,29 @@ export default function MotionsView() {
           </div>
 
           {needsTimes && (
-            <div className="flex gap-4 flex-wrap">
-              <div>
-                <label className="block text-gray-400 mb-1">Total Time (MM:SS)</label>
-                <div className="flex gap-2 items-center">
-                  <input className="w-16 bg-gray-700 border border-gray-600 rounded-xl px-2 py-3 text-white text-xl text-center focus:outline-none" value={totalMin} onChange={e => setTotalMin(e.target.value)} placeholder="mm" />
-                  <span className="text-gray-400">:</span>
-                  <input className="w-16 bg-gray-700 border border-gray-600 rounded-xl px-2 py-3 text-white text-xl text-center focus:outline-none" value={totalSec} onChange={e => setTotalSec(e.target.value)} placeholder="ss" />
-                </div>
-              </div>
-              {needsSpeakTime && (
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-4 flex-wrap">
                 <div>
-                  <label className="block text-gray-400 mb-1">Speaking Time (sec)</label>
-                  <input className="w-24 bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-xl text-center focus:outline-none" value={speakSec} onChange={e => setSpeakSec(e.target.value)} />
+                  <label className="block text-gray-400 mb-1">Total Time (MM:SS)</label>
+                  <div className="flex gap-2 items-center">
+                    <input className="w-16 bg-gray-700 border border-gray-600 rounded-xl px-2 py-3 text-white text-xl text-center focus:outline-none" value={totalMin} onChange={e => setTotalMin(e.target.value)} placeholder="mm" />
+                    <span className="text-gray-400">:</span>
+                    <input className="w-16 bg-gray-700 border border-gray-600 rounded-xl px-2 py-3 text-white text-xl text-center focus:outline-none" value={totalSec} onChange={e => setTotalSec(e.target.value)} placeholder="ss" />
+                  </div>
+                </div>
+                {needsSpeakTime && (
+                  <div>
+                    <label className="block text-gray-400 mb-1">Speaking Time (sec)</label>
+                    <input className={`w-24 bg-gray-700 border rounded-xl px-3 py-3 text-white text-xl text-center focus:outline-none ${unevenSplit ? 'border-red-500' : 'border-gray-600'}`} value={speakSec} onChange={e => setSpeakSec(e.target.value)} />
+                  </div>
+                )}
+              </div>
+              {needsSpeakTime && maxSpeakers !== null && !unevenSplit && maxSpeakers > 0 && (
+                <div className="text-gray-400 text-sm">Max speakers: <strong className="text-white">{maxSpeakers}</strong></div>
+              )}
+              {unevenSplit && (
+                <div className="bg-red-900/40 border border-red-600 rounded-xl px-4 py-2 text-red-300 text-base">
+                  {speakingTimeSecs}s doesn't divide evenly into {totalTimeSecs}s — adjust times so there's no leftover ({totalTimeSecs % speakingTimeSecs}s remainder).
                 </div>
               )}
             </div>
@@ -252,7 +266,7 @@ export default function MotionsView() {
           </div>
 
           <div className="flex gap-3">
-            <button onClick={handleAdd} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-white text-lg font-bold">
+            <button onClick={handleAdd} disabled={unevenSplit} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-white text-lg font-bold">
               Add Motion
             </button>
             <button onClick={() => setShowForm(false)} className="px-5 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl text-gray-300 text-lg">
