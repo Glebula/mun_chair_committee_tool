@@ -193,7 +193,7 @@ export function useAppStore() {
   }, [update]);
 
   // ── Moderated Caucus ────────────────────────────────────────────
-  const modSetup = useCallback((topic: string, totalTimeSecs: number, speakingTimeSecs: number) => {
+  const modSetup = useCallback((topic: string, totalTimeSecs: number, speakingTimeSecs: number, speakers: string[]) => {
     update(s => ({
       ...s,
       topic,
@@ -203,48 +203,63 @@ export function useAppStore() {
         speakingTimeSecs,
         totalRemaining: totalTimeSecs,
         speakerRemaining: speakingTimeSecs,
-        currentSpeakerId: null,
-        totalRunning: false,
+        speakers,
+        currentSpeakerIndex: 0,
         speakerRunning: false,
         started: false,
       },
     }));
   }, [update]);
 
-  const modSelectSpeaker = useCallback((delegateId: string) => {
+  const modAddSpeaker = useCallback((delegateId: string) => {
     update(s => ({
       ...s,
-      modCaucus: {
-        ...s.modCaucus,
-        currentSpeakerId: delegateId,
-        speakerRemaining: s.modCaucus.speakingTimeSecs,
-        speakerRunning: false,
-        started: true,
-      },
+      modCaucus: { ...s.modCaucus, speakers: [...s.modCaucus.speakers, delegateId] },
     }));
   }, [update]);
 
-  const modSetRunning = useCallback((totalRunning: boolean, speakerRunning: boolean) => {
-    update(s => ({ ...s, modCaucus: { ...s.modCaucus, totalRunning, speakerRunning } }));
+  const modRemoveSpeaker = useCallback((index: number) => {
+    update(s => {
+      const speakers = s.modCaucus.speakers.filter((_, i) => i !== index);
+      const currentSpeakerIndex = Math.min(s.modCaucus.currentSpeakerIndex, Math.max(0, speakers.length - 1));
+      return { ...s, modCaucus: { ...s.modCaucus, speakers, currentSpeakerIndex } };
+    });
+  }, [update]);
+
+  const modStart = useCallback(() => {
+    update(s => ({
+      ...s,
+      modCaucus: { ...s.modCaucus, started: true, speakerRunning: false, speakerRemaining: s.modCaucus.speakingTimeSecs },
+    }));
+  }, [update]);
+
+  const modSetRunning = useCallback((speakerRunning: boolean) => {
+    update(s => ({ ...s, modCaucus: { ...s.modCaucus, speakerRunning } }));
   }, [update]);
 
   const modTick = useCallback(() => {
     update(s => {
       const mc = s.modCaucus;
-      let totalRemaining = mc.totalRemaining;
-      let speakerRemaining = mc.speakerRemaining;
-      let totalRunning = mc.totalRunning;
-      let speakerRunning = mc.speakerRunning;
+      if (!mc.speakerRunning || mc.speakerRemaining <= 0) return s;
+      const speakerRemaining = Math.max(0, mc.speakerRemaining - 1);
+      const totalRemaining = Math.max(0, mc.totalRemaining - 1);
+      const speakerRunning = speakerRemaining > 0;
+      return { ...s, modCaucus: { ...mc, speakerRemaining, totalRemaining, speakerRunning } };
+    });
+  }, [update]);
 
-      if (mc.totalRunning && totalRemaining > 0) {
-        totalRemaining = Math.max(0, totalRemaining - 1);
-        if (totalRemaining === 0) { totalRunning = false; speakerRunning = false; }
-      }
-      if (mc.speakerRunning && speakerRemaining > 0) {
-        speakerRemaining = Math.max(0, speakerRemaining - 1);
-        if (speakerRemaining === 0) speakerRunning = false;
-      }
-      return { ...s, modCaucus: { ...mc, totalRemaining, speakerRemaining, totalRunning, speakerRunning } };
+  const modNextSpeaker = useCallback(() => {
+    update(s => {
+      const next = s.modCaucus.currentSpeakerIndex + 1;
+      return {
+        ...s,
+        modCaucus: {
+          ...s.modCaucus,
+          currentSpeakerIndex: next,
+          speakerRemaining: s.modCaucus.speakingTimeSecs,
+          speakerRunning: false,
+        },
+      };
     });
   }, [update]);
 
@@ -408,8 +423,8 @@ export function useAppStore() {
             speakingTimeSecs: m.speakingTimeSecs,
             totalRemaining: m.totalTimeSecs,
             speakerRemaining: m.speakingTimeSecs,
-            currentSpeakerId: null,
-            totalRunning: false,
+            speakers: [],
+            currentSpeakerIndex: 0,
             speakerRunning: false,
             started: false,
           },
@@ -523,9 +538,12 @@ export function useAppStore() {
     gslResetTimer,
     gslSetCurrentIndex,
     modSetup,
-    modSelectSpeaker,
+    modAddSpeaker,
+    modRemoveSpeaker,
+    modStart,
     modSetRunning,
     modTick,
+    modNextSpeaker,
     modResetSpeaker,
     startUnmod,
     unmodSetRunning,

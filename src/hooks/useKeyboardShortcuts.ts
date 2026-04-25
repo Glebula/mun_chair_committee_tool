@@ -18,7 +18,7 @@ export function useKeyboardShortcuts(store: AppStore) {
           if (state.sessionState === 'GSL') {
             store.gslSetTimerRunning(!state.gsl.timerRunning);
           } else if (state.sessionState === 'ModeratedCaucus') {
-            store.modSetRunning(state.modCaucus.totalRunning, !state.modCaucus.speakerRunning);
+            store.modSetRunning(!state.modCaucus.speakerRunning);
           } else if (state.sessionState === 'UnmoderatedCaucus' || state.sessionState === 'GentlemansUnmod') {
             store.unmodSetRunning(!state.unmod.running);
           } else if (state.sessionState === 'RoundRobin') {

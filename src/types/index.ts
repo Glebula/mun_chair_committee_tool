@@ -61,8 +61,8 @@ export interface ModCaucusState {
   speakingTimeSecs: number;
   totalRemaining: number;
   speakerRemaining: number;
-  currentSpeakerId: string | null;
-  totalRunning: boolean;
+  speakers: string[]; // delegateIds in order
+  currentSpeakerIndex: number;
   speakerRunning: boolean;
   started: boolean;
 }
