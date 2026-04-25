@@ -28,13 +28,16 @@ function MotionCard({
   const [agInput, setAgInput] = useState('');
   const [majType, setMajType] = useState<MajorityType>(motion.majorityType);
 
-  function submitVote() {
-    const f = parseInt(forInput, 10);
-    const a = parseInt(agInput, 10);
-    if (isNaN(f) || isNaN(a)) return;
-    onVote(motion.id, f, a, majType);
+  function submitVote(f?: number, a?: number) {
+    const forVal = f !== undefined ? f : parseInt(forInput, 10);
+    const agVal = a !== undefined ? a : parseInt(agInput, 10);
+    if (isNaN(forVal) || isNaN(agVal)) return;
+    onVote(motion.id, forVal, agVal, majType);
     setVoting(false);
   }
+
+  function autoPass() { submitVote(1, 0); }
+  function autoFail() { submitVote(0, 1); }
 
   const threshold = majType === 'simple' ? simpleMajority : twoThirdsMajority;
 
@@ -52,12 +55,26 @@ function MotionCard({
         </div>
         <div className="flex gap-2">
           {motion.result === null && (
-            <button
-              onClick={() => setVoting(v => !v)}
-              className="px-3 py-2 bg-yellow-700/40 border border-yellow-600 text-yellow-300 rounded-lg text-base font-semibold hover:bg-yellow-700/60"
-            >
-              Vote
-            </button>
+            <>
+              <button
+                onClick={() => setVoting(v => !v)}
+                className="px-3 py-2 bg-yellow-700/40 border border-yellow-600 text-yellow-300 rounded-lg text-base font-semibold hover:bg-yellow-700/60"
+              >
+                Vote
+              </button>
+              <button
+                onClick={autoPass}
+                className="px-3 py-2 bg-green-800/40 border border-green-600 text-green-300 rounded-lg text-base font-semibold hover:bg-green-800/60"
+              >
+                Pass
+              </button>
+              <button
+                onClick={autoFail}
+                className="px-3 py-2 bg-red-900/40 border border-red-700 text-red-300 rounded-lg text-base font-semibold hover:bg-red-900/60"
+              >
+                Fail
+              </button>
+            </>
           )}
           {motion.result === 'Pass' && (
             <button
@@ -121,7 +138,7 @@ function MotionCard({
               />
             </div>
             <button
-              onClick={submitVote}
+              onClick={() => submitVote()}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white font-semibold text-base"
             >
               Tally
