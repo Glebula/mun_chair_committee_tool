@@ -103,6 +103,15 @@ export function useAppStore() {
     }));
   }, [update]);
 
+  const adjustSpeechCount = useCallback((delegateId: string, delta: number) => {
+    update(s => ({
+      ...s,
+      delegates: s.delegates.map(d =>
+        d.id === delegateId ? { ...d, speechCount: Math.max(0, d.speechCount + delta) } : d
+      ),
+    }));
+  }, [update]);
+
   const presentDelegates = state.delegates.filter(d => d.attendance !== 'Absent');
   const presentCount = presentDelegates.length;
   const simpleMajority = Math.floor(presentCount / 2) + 1;
@@ -528,6 +537,7 @@ export function useAppStore() {
     setCrisisDelegates,
     setAttendance,
     incrementSpeechCount,
+    adjustSpeechCount,
     gslAddSpeaker,
     gslRemoveSpeaker,
     gslReorder,

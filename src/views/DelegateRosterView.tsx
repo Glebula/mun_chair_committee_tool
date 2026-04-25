@@ -4,7 +4,7 @@ import { useStore } from '../store/StoreContext';
 type SortKey = 'name' | 'speechCount';
 
 export default function DelegateRosterView() {
-  const { presentDelegates } = useStore();
+  const { state, presentDelegates, incrementSpeechCount, adjustSpeechCount } = useStore();
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortAsc, setSortAsc] = useState(true);
   const [selected, setSelected] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export default function DelegateRosterView() {
     else { setSortKey(key); setSortAsc(key === 'name'); }
   }
 
-  const selectedDelegate = selected ? sorted.find(d => d.id === selected) : null;
+  const selectedDelegate = selected ? state.delegates.find(d => d.id === selected) : null;
 
   return (
     <div className="flex flex-col gap-4 p-4 max-w-3xl mx-auto w-full">
@@ -61,27 +61,40 @@ export default function DelegateRosterView() {
 
       <div className="flex flex-col gap-1 overflow-y-auto max-h-[60vh]">
         {sorted.map(d => (
-          <button
+          <div
             key={d.id}
-            onClick={() => setSelected(d.id === selected ? null : d.id)}
-            className={`flex items-center justify-between px-4 py-3 rounded-xl border text-left transition-colors ${
-              d.id === selected
-                ? 'border-blue-500 bg-blue-500/15'
-                : 'border-gray-700 bg-gray-800/40 hover:bg-gray-700/60'
+            className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-colors ${
+              d.id === selected ? 'border-blue-500 bg-blue-500/15' : 'border-gray-700 bg-gray-800/40'
             }`}
           >
-            <span className="text-lg text-gray-200">{d.name}</span>
-            <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSelected(d.id === selected ? null : d.id)}
+              className="flex-1 text-left min-w-0 mr-3"
+            >
+              <span className="text-lg text-gray-200 truncate block">{d.name}</span>
+            </button>
+
+            <div className="flex items-center gap-2 shrink-0">
               <span className={`text-sm font-semibold px-2 py-1 rounded ${
                 d.attendance === 'Present & Voting' ? 'bg-blue-900/40 text-blue-300' : 'bg-green-900/40 text-green-300'
               }`}>
                 {d.attendance === 'Present & Voting' ? 'P&V' : 'P'}
               </span>
-              <span className="text-gray-300 font-mono w-8 text-right">
-                {d.speechCount > 0 ? `×${d.speechCount}` : '—'}
-              </span>
+
+              <button
+                onClick={() => adjustSpeechCount(d.id, -1)}
+                disabled={d.speechCount <= 0}
+                className="w-9 h-9 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-30 text-white font-bold text-xl flex items-center justify-center"
+                title="Remove 1 speech"
+              >−</button>
+              <span className="font-mono text-white text-lg w-7 text-center">{d.speechCount}</span>
+              <button
+                onClick={() => incrementSpeechCount(d.id)}
+                className="w-9 h-9 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-bold text-xl flex items-center justify-center"
+                title="Add 1 speech"
+              >+</button>
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>
