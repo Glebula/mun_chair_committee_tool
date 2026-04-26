@@ -3,6 +3,7 @@ import {
   DndContext, closestCenter, PointerSensor, useSensor, useSensors,
   type DragEndEvent,
 } from '@dnd-kit/core';
+import DelegatePicker from '../components/DelegatePicker';
 import {
   SortableContext, verticalListSortingStrategy, useSortable, arrayMove,
 } from '@dnd-kit/sortable';
@@ -123,10 +124,6 @@ export default function GSLView() {
     setEditingTime(false);
   }
 
-  const filteredDelegates = presentDelegates.filter(d =>
-    d.name.toLowerCase().includes(addSearch.toLowerCase())
-  );
-
   const tickCallback = useCallback(() => gslTickTimer(), [gslTickTimer]);
 
   return (
@@ -165,25 +162,13 @@ export default function GSLView() {
 
       {/* Add Speaker Dropdown */}
       {showAddDropdown && (
-        <div className="bg-gray-800 border border-gray-600 rounded-xl p-3 flex flex-col gap-2">
-          <input
-            autoFocus
-            className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
-            placeholder="Search delegates..."
-            value={addSearch}
-            onChange={e => setAddSearch(e.target.value)}
+        <div className="bg-gray-800 border border-gray-600 rounded-xl p-3">
+          <DelegatePicker
+            delegates={presentDelegates}
+            search={addSearch}
+            onSearchChange={setAddSearch}
+            onSelect={id => { gslAddSpeaker(id); setShowAddDropdown(false); }}
           />
-          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
-            {filteredDelegates.map(d => (
-              <button
-                key={d.id}
-                onClick={() => { gslAddSpeaker(d.id); setShowAddDropdown(false); }}
-                className="px-3 py-2 bg-gray-700 hover:bg-blue-600/40 border border-gray-600 hover:border-blue-500 rounded-lg text-gray-200 text-sm"
-              >
-                {d.name}
-              </button>
-            ))}
-          </div>
         </div>
       )}
 
