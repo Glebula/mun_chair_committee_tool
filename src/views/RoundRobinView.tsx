@@ -9,6 +9,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useStore } from '../store/StoreContext';
 import Timer from '../components/Timer';
+import DelegatePicker from '../components/DelegatePicker';
 import type { RoundRobinParticipant } from '../types';
 
 function SortableParticipant({
@@ -101,7 +102,6 @@ export default function RoundRobinView() {
     : null;
 
   const filteredDelegates = presentDelegates.filter(d =>
-    d.name.toLowerCase().includes(addSearch.toLowerCase()) &&
     !participants.some(p => p.delegateId === d.id)
   );
 
@@ -121,22 +121,14 @@ export default function RoundRobinView() {
 
         <div>
           <label className="block text-gray-400 mb-2 text-lg">Add Participants</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 mb-2"
-            placeholder="Search delegates..."
-            value={addSearch}
-            onChange={e => setAddSearch(e.target.value)}
-          />
-          <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto">
-            {filteredDelegates.map(d => (
-              <button
-                key={d.id}
-                onClick={() => addParticipant(d.id)}
-                className="px-3 py-2 bg-gray-700 hover:bg-blue-600/40 border border-gray-600 hover:border-blue-500 rounded-lg text-gray-200 text-sm"
-              >
-                {d.name}
-              </button>
-            ))}
+          <div className="bg-gray-800 border border-gray-600 rounded-xl p-3">
+            <DelegatePicker
+              delegates={filteredDelegates}
+              search={addSearch}
+              onSearchChange={setAddSearch}
+              onSelect={id => { addParticipant(id); setAddSearch(''); }}
+              maxHeight="max-h-48"
+            />
           </div>
         </div>
 

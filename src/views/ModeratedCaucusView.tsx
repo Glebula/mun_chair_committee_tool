@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useStore } from '../store/StoreContext';
 import Timer from '../components/Timer';
+import DelegatePicker from '../components/DelegatePicker';
 
 export default function ModeratedCaucusView() {
   const store = useStore();
@@ -45,10 +46,6 @@ export default function ModeratedCaucusView() {
   const speakerExpired = mc.speakerRemaining <= 0 && mc.started;
   const totalExpired = mc.totalRemaining <= 0;
   const allDone = mc.started && mc.currentSpeakerIndex >= mc.speakers.length;
-
-  const filteredDelegates = presentDelegates.filter(d =>
-    d.name.toLowerCase().includes(speakerSearch.toLowerCase())
-  );
 
   // ── Setup screen ──────────────────────────────────────────────────
   if (setup) {
@@ -129,22 +126,14 @@ export default function ModeratedCaucusView() {
         {/* Add speakers */}
         <div>
           <label className="block text-gray-400 mb-2 text-lg">Add Speakers ({mc.speakers.length} / {maxSpeakers})</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 mb-2"
-            placeholder="Search delegates..."
-            value={speakerSearch}
-            onChange={e => setSpeakerSearch(e.target.value)}
-          />
-          <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
-            {filteredDelegates.map(d => (
-              <button
-                key={d.id}
-                onClick={() => { modAddSpeaker(d.id); setSpeakerSearch(''); }}
-                className="px-3 py-2 bg-gray-700 hover:bg-blue-600/40 border border-gray-600 hover:border-blue-500 rounded-lg text-gray-200 text-sm"
-              >
-                {d.name}
-              </button>
-            ))}
+          <div className="bg-gray-800 border border-gray-600 rounded-xl p-3">
+            <DelegatePicker
+              delegates={presentDelegates}
+              search={speakerSearch}
+              onSearchChange={setSpeakerSearch}
+              onSelect={id => { modAddSpeaker(id); setSpeakerSearch(''); }}
+              maxHeight="max-h-48"
+            />
           </div>
         </div>
 
