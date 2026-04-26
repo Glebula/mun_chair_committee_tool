@@ -109,6 +109,13 @@ export default function GSLView() {
     gslNextSpeaker();
   }
 
+  function handleDoneSpeaking() {
+    if (currentEntry) incrementSpeechCount(currentEntry.delegateId);
+    gslSetTimerRunning(false);
+  }
+
+  const isLastSpeaker = gsl.currentIndex >= gsl.speakers.length - 1;
+
   function applyTime() {
     const secs = parseInt(timeInput, 10);
     if (secs > 0) gslSetSpeakingTime(secs);
@@ -213,15 +220,14 @@ export default function GSLView() {
               Reset
             </button>
             <button
-              onClick={handleNextSpeaker}
-              disabled={gsl.currentIndex >= gsl.speakers.length - 1}
+              onClick={isLastSpeaker ? handleDoneSpeaking : handleNextSpeaker}
               className={`px-6 py-3 rounded-xl text-xl font-bold min-w-[160px] ${
                 expired
                   ? 'bg-yellow-500 hover:bg-yellow-400 text-black animate-pulse'
-                  : 'bg-gray-700 hover:bg-gray-600 text-gray-200 disabled:opacity-40'
+                  : 'bg-gray-700 hover:bg-gray-600 text-gray-200'
               }`}
             >
-              Next Speaker →
+              {isLastSpeaker ? 'Done Speaking ✓' : 'Next Speaker →'}
             </button>
           </div>
         </div>
