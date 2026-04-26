@@ -162,13 +162,19 @@ export default function GSLView() {
 
       {/* Add Speaker Dropdown */}
       {showAddDropdown && (
-        <div className="bg-gray-800 border border-gray-600 rounded-xl p-3">
+        <div className="bg-gray-800 border border-gray-600 rounded-xl p-3 flex flex-col gap-2">
           <DelegatePicker
             delegates={presentDelegates}
             search={addSearch}
             onSearchChange={setAddSearch}
-            onSelect={id => { gslAddSpeaker(id); setShowAddDropdown(false); }}
+            onSelect={id => { gslAddSpeaker(id); setAddSearch(''); }}
           />
+          <button
+            onClick={() => setShowAddDropdown(false)}
+            className="self-end px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 text-sm"
+          >
+            Done Adding
+          </button>
         </div>
       )}
 
