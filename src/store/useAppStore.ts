@@ -152,11 +152,8 @@ export function useAppStore() {
   const gslNextSpeaker = useCallback(() => {
     update(s => {
       const next = s.gsl.currentIndex + 1;
-      if (next >= s.gsl.speakers.length) return s;
-      const nextId = s.gsl.speakers[next]?.delegateId;
-      if (nextId) {
-        // increment outgoing speaker count is done explicitly
-      }
+      // Allow advancing to speakers.length to mark list exhausted
+      if (next > s.gsl.speakers.length) return s;
       return {
         ...s,
         gsl: {

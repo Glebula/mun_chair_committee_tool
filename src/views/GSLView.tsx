@@ -111,10 +111,11 @@ export default function GSLView() {
 
   function handleDoneSpeaking() {
     if (currentEntry) incrementSpeechCount(currentEntry.delegateId);
-    gslSetTimerRunning(false);
+    gslNextSpeaker(); // advances index to speakers.length, exhausting the list
   }
 
-  const isLastSpeaker = gsl.currentIndex >= gsl.speakers.length - 1;
+  const isLastSpeaker = gsl.currentIndex === gsl.speakers.length - 1;
+  const listExhausted = gsl.speakers.length > 0 && gsl.currentIndex >= gsl.speakers.length;
 
   function applyTime() {
     const secs = parseInt(timeInput, 10);
@@ -187,7 +188,12 @@ export default function GSLView() {
       )}
 
       {/* Current speaker + timer */}
-      {gsl.speakers.length > 0 ? (
+      {listExhausted ? (
+        <div className="flex flex-col items-center gap-4 bg-gray-800/40 border border-gray-700 rounded-2xl p-8 text-center">
+          <div className="text-2xl font-bold text-gray-400">All speakers have gone</div>
+          <div className="text-gray-500">Add more delegates to continue the GSL.</div>
+        </div>
+      ) : gsl.speakers.length > 0 ? (
         <div className="flex flex-col items-center gap-4 bg-gray-800/60 rounded-2xl p-6">
           <div className="text-xl text-gray-400">
             {currentDelegate ? (
@@ -208,8 +214,7 @@ export default function GSLView() {
           <div className="flex gap-3 flex-wrap justify-center">
             <button
               onClick={() => gslSetTimerRunning(!gsl.timerRunning)}
-              disabled={gsl.speakers.length === 0}
-              className="px-6 py-3 rounded-xl text-xl font-bold bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white min-w-[120px]"
+              className="px-6 py-3 rounded-xl text-xl font-bold bg-blue-600 hover:bg-blue-500 text-white min-w-[120px]"
             >
               {gsl.timerRunning ? 'Pause' : 'Play'}
             </button>
