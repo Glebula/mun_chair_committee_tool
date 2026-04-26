@@ -16,15 +16,9 @@ const NAV_ITEMS: NavItem[] = [
   { state: 'DelegateRoster', label: 'Roster' },
 ];
 
-const CRISIS_ITEMS: NavItem[] = [
-  { state: 'RoundRobin', label: 'Round Robin', crisis: true },
-];
-
 export default function SideNav() {
   const { state, setSessionState } = useStore();
-  const isCrisis = state.mode === 'Crisis';
-
-  const items = isCrisis ? [...NAV_ITEMS, ...CRISIS_ITEMS] : NAV_ITEMS;
+  const items = NAV_ITEMS;
 
   function isActive(s: SessionState) {
     return state.sessionState === s;

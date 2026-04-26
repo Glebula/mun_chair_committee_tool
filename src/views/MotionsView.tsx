@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { useStore } from '../store/StoreContext';
 import type { MotionType, MajorityType, Motion } from '../types';
 
-const MOTION_TYPES: MotionType[] = [
+const GA_MOTION_TYPES: MotionType[] = [
+  'Open GSL', 'Moderated Caucus', 'Unmoderated Caucus', 'Other',
+];
+
+const CRISIS_MOTION_TYPES: MotionType[] = [
   'Open GSL', 'Moderated Caucus', 'Unmoderated Caucus', "Gentleman's Unmod", 'Round Robin', 'Other',
 ];
 
@@ -160,6 +164,8 @@ export default function MotionsView() {
   const { state, addMotion, removeMotion, voteMotion, startMotion, presentDelegates,
     simpleMajority, twoThirdsMajority } = useStore();
 
+  const motionTypes = state.mode === 'Crisis' ? CRISIS_MOTION_TYPES : GA_MOTION_TYPES;
+
   const [showForm, setShowForm] = useState(false);
   const [motionType, setMotionType] = useState<MotionType>('Moderated Caucus');
   const [topic, setTopic] = useState('');
@@ -214,7 +220,7 @@ export default function MotionsView() {
                 onChange={e => setMotionType(e.target.value as MotionType)}
                 className="w-full bg-gray-700 border border-gray-600 rounded-xl px-3 py-3 text-white text-lg focus:outline-none"
               >
-                {MOTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                {motionTypes.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
             <div className="flex-1 min-w-40">
