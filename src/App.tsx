@@ -46,7 +46,7 @@ function AppContent() {
 
   return (
     <StoreContext.Provider value={store}>
-      <div className={`min-h-screen flex flex-col ${isLight ? 'bg-gray-100 text-gray-900' : 'bg-gray-950 text-gray-100'}`}>
+      <div className={`min-h-screen flex flex-col bg-gray-950 text-gray-100 ${isLight ? 'light-mode' : ''}`}>
         {state.sessionState !== 'ModeSelect' && <TopBar />}
 
         <div className={`flex flex-1 ${inSession ? 'flex-row' : 'flex-col'}`}>
@@ -57,7 +57,7 @@ function AppContent() {
         </div>
 
         {inSession && state.sessionState !== 'Suspended' && (
-          <div className={`text-center text-xs py-1 px-4 border-t ${isLight ? 'bg-gray-200 border-gray-300 text-gray-500' : 'bg-gray-900 border-gray-800 text-gray-600'}`}>
+          <div className="text-center text-xs py-1 px-4 border-t bg-gray-900 border-gray-800 text-gray-600">
             <kbd className="font-mono">Space</kbd> play/pause &nbsp;·&nbsp;
             <kbd className="font-mono">N</kbd> next speaker &nbsp;·&nbsp;
             <kbd className="font-mono">R</kbd> reset timer
