@@ -231,17 +231,29 @@ export default function ModeratedCaucusView() {
             >
               Reset
             </button>
-            <button
-              onClick={handleNextSpeaker}
-              disabled={mc.currentSpeakerIndex >= mc.speakers.length - 1 && !speakerExpired}
-              className={`px-6 py-3 rounded-xl text-xl font-bold min-w-[160px] ${
-                speakerExpired
-                  ? 'bg-yellow-500 hover:bg-yellow-400 text-black animate-pulse'
-                  : 'bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-gray-200'
-              }`}
-            >
-              Next Speaker →
-            </button>
+            {mc.currentSpeakerIndex === mc.speakers.length - 1 ? (
+              <button
+                onClick={handleNextSpeaker}
+                className={`px-6 py-3 rounded-xl text-xl font-bold min-w-[160px] ${
+                  speakerExpired
+                    ? 'bg-yellow-500 hover:bg-yellow-400 text-black animate-pulse'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-200'
+                }`}
+              >
+                Done Speaking ✓
+              </button>
+            ) : (
+              <button
+                onClick={handleNextSpeaker}
+                className={`px-6 py-3 rounded-xl text-xl font-bold min-w-[160px] ${
+                  speakerExpired
+                    ? 'bg-yellow-500 hover:bg-yellow-400 text-black animate-pulse'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-200'
+                }`}
+              >
+                Next Speaker →
+              </button>
+            )}
           </div>
         </div>
       )}
