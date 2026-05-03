@@ -36,8 +36,11 @@ export default function RollCall() {
 
   function finishSetup() {
     const names = crisisText.split('\n').map(n => n.trim()).filter(Boolean);
-    if (names.length === 0) return;
-    setCrisisDelegates(names);
+    if (names.length > 0) {
+      setCrisisDelegates(names);
+    } else if (state.delegates.length === 0) {
+      return;
+    }
     setSetupDone(true);
   }
 
