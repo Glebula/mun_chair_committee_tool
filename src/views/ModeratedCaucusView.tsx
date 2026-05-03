@@ -187,7 +187,6 @@ export default function ModeratedCaucusView() {
           remaining={mc.totalRemaining}
           total={mc.totalTimeSecs}
           running={mc.speakerRunning}
-          onTick={tickCb}
           size="medium"
           label="Caucus Remaining"
         />

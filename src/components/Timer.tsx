@@ -4,7 +4,7 @@ interface TimerProps {
   remaining: number;
   total: number;
   running: boolean;
-  onTick: () => void;
+  onTick?: () => void;
   size?: 'large' | 'medium' | 'small';
   label?: string;
 }
@@ -20,7 +20,7 @@ export default function Timer({ remaining, total, running, onTick, size = 'large
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (running && remaining > 0) {
+    if (onTick && running && remaining > 0) {
       intervalRef.current = setInterval(onTick, 1000);
     } else {
       if (intervalRef.current) clearInterval(intervalRef.current);
