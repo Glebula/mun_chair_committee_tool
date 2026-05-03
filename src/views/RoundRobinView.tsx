@@ -13,12 +13,13 @@ import DelegatePicker from '../components/DelegatePicker';
 import type { RoundRobinParticipant } from '../types';
 
 function SortableParticipant({
-  entry, index, isCurrent, name, onRemove,
+  entry, index, isCurrent, name, speechCount, onRemove,
 }: {
   entry: RoundRobinParticipant;
   index: number;
   isCurrent: boolean;
   name: string;
+  speechCount: number;
   onRemove: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: entry.entryId });
@@ -40,6 +41,9 @@ function SortableParticipant({
       <span className={`flex-1 text-lg font-semibold ${isCurrent ? 'text-blue-200' : 'text-gray-200'}`}>
         {index + 1}. {name}
       </span>
+      {speechCount > 0 && (
+        <span className="text-xs text-gray-400 font-mono bg-gray-700/60 px-1.5 py-0.5 rounded">×{speechCount}</span>
+      )}
       <button
         onClick={onRemove}
         className="text-gray-500 hover:text-red-400 text-xl font-bold px-2"
@@ -146,6 +150,7 @@ export default function RoundRobinView() {
                       index={i}
                       isCurrent={false}
                       name={d?.name ?? '(unknown)'}
+                      speechCount={d?.speechCount ?? 0}
                       onRemove={() => removeParticipant(p.entryId)}
                     />
                   );
@@ -242,6 +247,9 @@ export default function RoundRobinView() {
               <span className={`text-lg font-semibold ${i === rr.currentIndex ? 'text-blue-200' : 'text-gray-300'}`}>
                 {i + 1}. {d?.name ?? '(unknown)'}
               </span>
+              {d && d.speechCount > 0 && (
+                <span className="ml-2 text-xs text-gray-400 font-mono bg-gray-700/60 px-1.5 py-0.5 rounded">×{d.speechCount}</span>
+              )}
               {i < rr.currentIndex && <span className="ml-auto text-green-400 text-sm">✓ done</span>}
             </div>
           );
